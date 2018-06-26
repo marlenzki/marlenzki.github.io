@@ -1,195 +1,22 @@
-<style>
-body{
-  background-color:#0d2a30;
-}
+<!DOCTYPE html>
+<html lang="en" >
 
-#searchclear {
-    position: absolute;
-    top:9px;
-    right:9px;
-    height: 14px;
-    font-size: 16px;
-    cursor: pointer;
-    color: #ff5733;
-    visibility: hidden;
-}
-
-.btn-group{
-  position: relative;
-  margin-top:10%;
-  width:35px;
-  height:34px;
- 
-}
-
-#shuffle{
-  color:#ff5733;
-}
-#shuffle{
-  background-color:transparent;
-  border:none;
-}
-.search{
-  /*width:auto;*/
-  height:100%;
-  position: relative;
-  margin-left:0px;
-  margin-right:100px;
-  border: 2px solid #ff5733;
-  border-radius: 20px;
-  background-color:#FFFEF3;
-}
-h3{
-  font-size:18px;
-  color:white;
-  margin-top:10px;
-}
-.searchArea{
-  margin-left:auto;
-  margin-right:auto;
-  text-align:center;
-  width:100%;
-  min-width:300px;
-}
-.result{
-  background-color:#FFFEF3;
-  margin:10px;
-  overflow:hidden;
-  padding:20px;
-}
-.topBar{
-  text-align:center;
-  font-size:20px;
-  padding-top:30px;
-}
-
-#searchBar:hover { 
-    cursor: pointer;
-}
-a, a:link, a:visited, a:hover, a:active{
-  color:black;
-  text-decoration:none;
-}
-strong{
-  font-size:20px;
-}
-.result:hover{
-  color: black;
-  box-shadow: 5px 5px #ff5733;
-}
-</style>
-<script>
-var original = $("#searchArea").clone();
-
-$('#searchBar').bind("enterKey",function(e){
-  $("#btnGroupId").animate({"margin-top":"2%"});
-  $("#label1").fadeOut();
-  var desiredSearch = $("#searchBar").val().split(" ").join("%20");
- deleteOldResults();
- getResults(desiredSearch);
-});
-  
-function WidenBar(){
-  $("#btnGroupId").animate({"width":"50%"}); 
-  $("#searchBar").css("cursor","text");
-  $("#label1").fadeOut();
-  $("#searchclear").css("visibility","visible");
-};
-
-function CloseBar(){
-  $("#btnGroupId").animate({"width":"35px"}); 
-  $("#searchBar").css("cursor","pointer");
-  $("#label1").fadeIn();
-  $("#searchclear").css("visibility","hidden");
-};
- 
-$('#searchBar').focus(function(){  //when user clicks circle, widen input
-  WidenBar();
-  
-});
-
-$("#searchclear").click(function(){
-  $("#searchBar").val("");
-  deleteOldResults();
-  CloseBar();
-});
-
-
-$('#searchBar').blur(function(){  
-  CloseBar();
-});
-
-
-
-
-
-  
-  
-$('#searchBar').keyup(function(e){
-    if(e.keyCode == 13)
-    {
-        $(this).trigger("enterKey");
-    }
-});
-
-
-function getResults(desiredSearch){
-   var wikiURL = "https://en.wikipedia.org/w/api.php?action=query&format=json&list=search&srsearch="+desiredSearch+"&utf8=";
-  $.ajax({ //open ajax1
-        dataType: "jsonp",
-        url:wikiURL,
-        success: function(json){ //oppen success1
-          for(i=0;i<json.query.search.length;i++){ //open for loop thru each result
-            var pageID = String(json.query.search[i].pageid);
-            var searchTerm = json.query.search[i].title.split(" ").join("%20");
-            $("#Results").append("<a target='_blank' href='https://en.wikipedia.org/?curid=" + pageID + "'><div class='result' id='result"+i+"'><strong>"+json.query.search[i].title + "</strong><br><br></div></a>");
-            //$("#result"+i).slideDown("slow");
-            getDetails(i,searchTerm,pageID);
-          }; //close for loop
-        
-        }, //close success1
-        error: function(){ //open error1
-          alert("error, plz try again!");
-        }, //close error1
-        cache: false
-      }); //close ajax1
-  $("#searchBar").off("blur");
-} //close function
-
-function deleteOldResults(){
-  $('.result').fadeOut(300, function(){ 
-    $(this).remove();
-  });
-}
-
-
-
-
-function getDetails(i,searchTerm,pageID){
-   $.ajax({ // do addittional api call for each result open ajax2
-              dataType: "jsonp",
-              url:"https://en.wikipedia.org/w/api.php?action=query&prop=extracts&format=json&exintro=&titles="+searchTerm,
-              success: function(json_2){ //open success2 
-                var content = json_2.query.pages[pageID].extract;
-               
-                $("#result"+i).append(content);
-               //$("#Results").show();
-                //$("#result"+i).slideUp("slow").delay(100).fadeIn("slow");
-                //alert(i);
-                //alert(content);
-               }, //close success2
-              error: function(){ //open error2
-                     alert("error");
-
-              }, //close error2
-              cache: false
-            }); //close ajax2
-};
-
-</script>
-
-<html>
 <head>
+  <meta charset="UTF-8">
+  <title>Wikisearch2</title>
+  
+  
+  <link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0/css/bootstrap.css'>
+<link rel='stylesheet prefetch' href='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css'>
+
+      <link rel="stylesheet" href="css/style.css">
+
+  
+</head>
+
+<body>
+
+  <head>
   <link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet" type="text/css">
   <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.13/css/all.css" integrity="sha384-DNOHZ68U8hZfKXOrtjWvjxusGo9WQnrNx2sqG0tfsghAvtVlRW3tvkXWZh58N9jp" crossorigin="anonymous">
 
@@ -212,4 +39,15 @@ function getDetails(i,searchTerm,pageID){
     </div>
   </div>  
 </body>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js'></script>
+
+  
+
+    <script  src="js/index.js"></script>
+
+
+
+
+</body>
+
 </html>
